@@ -1,47 +1,39 @@
 ## Handoff — 2026-03-05 — Claude Code (Opus 4.6)
 
 ### What we accomplished
-- Refactored entire site UI to be video-first (video player hero, drawings collapsed)
-- Adopted Claude Code Protocol: DEBUG.md, DECISIONS.md, CHANGES.md, ROADMAP.md
-- Slimmed CLAUDE.md to lean pointers-and-instructions format
-- Created comprehensive ROADMAP.md with development priorities
-- Made project 1 (Harper's Big Chance) public for browser testing
-- Set up Digital Brain sync for this project
+- Complete "Warm Paper Studio" design revamp — new visual identity across all pages
+- New palette: terracotta coral, deep teal, warm cream, charcoal (replaced generic purple)
+- Paper grain texture, crayon-underline accents, organic shapes, staggered animations
+- Premium but warm aesthetic — targets parents who pay while honoring kids' art
+- Numbered step badges, colored accent bars, paper-line story text effect
+- Updated hero: "Your child drew it. We animate it."
+- Added printed storybook to roadmap (Priority 6)
+- Adopted Claude Code Protocol with full doc structure
 
 ### Where we stopped
-- Video-first UI is live and deployed
-- All protocol docs in place
-- ROADMAP.md documents the full development path forward
-- Site accessible at http://188.34.184.98 and https://everythingsastory.clodhost.com
+- Design revamp deployed and live at http://188.34.184.98
+- All pages working: home, explore, dashboard, project view/edit, auth
 
 ### What to do next (in priority order)
-1. **Wire up animator.js** — Replace old SDXL+SVD flow with working SeDream + video-01-live pattern from run-harper-test.js. This makes the "Generate Animation" button on the edit page actually work with the proven pipeline.
-2. **Video re-generation** — Allow re-running pipeline on existing projects
-3. **Story input improvements** — AI-assisted story expansion, scene preview before spending money
-4. **Audio/narration** — TTS voiceover synced with video scenes
-5. **Monetization** — Stripe integration, pricing tiers, credit system
+1. **Wire up animator.js** to the working SeDream + video-01-live pipeline (run-harper-test.js pattern)
+2. **Video re-generation** on existing projects
+3. **Audio/narration** — TTS voiceover for videos
+4. **Printed storybook** — PDF generation + print-on-demand API integration
+5. **Monetization** — Stripe, pricing tiers
 6. See ROADMAP.md for full details
 
 ### Gotchas / things to know
-- Node 18: `uuid` is ESM-only, use `crypto.randomUUID()`
-- Replicate returns FileOutput objects, not strings — use `.toString()`
-- SeDream `image_input` MUST be an array, not a string
-- DNS managed by clodhost via Cloudflare — direct IP (188.34.184.98) works as fallback
-- `animator.js` still uses OLD pipeline (SDXL/SVD) — the WORKING flow is in `run-harper-test.js`
-- Project 1 was private (now set to public) — this caused confusion when trying to view without login
+- Node 18: use `crypto.randomUUID()` not uuid package
+- Replicate FileOutput: use `.toString()` for URLs
+- SeDream `image_input` MUST be array
+- `animator.js` still uses OLD pipeline — working flow is in `run-harper-test.js`
+- Project 1 is now public for testing
+- Design uses Nunito weight 800 (added to font import) — check header.ejs if fonts look wrong
 
 ### Files touched this session
-- `views/project-view.ejs` — video hero, collapsible drawings
-- `views/dashboard.ejs` — video status badges
-- `views/explore.ejs` — play overlays, updated copy
-- `views/home.ejs` — play overlays, video-focused copy
-- `server.js` — added video_count to home query
-- `public/css/style.css` — video hero, play overlay, source materials styles
-- `CLAUDE.md` — slimmed to lean format
-- `DEBUG.md`, `DECISIONS.md`, `CHANGES.md`, `ROADMAP.md` — new protocol docs
-
-### Open questions raised this session
-- Should animator.js be fully rewritten or refactored incrementally?
-- Pricing strategy beyond 5x markup?
-- Which TTS model for kid-friendly narration?
-- Should we add background music to videos?
+- `public/css/style.css` — complete rewrite (Warm Paper Studio)
+- `views/home.ejs` — new hero, step badges, "Order a Book" feature
+- `views/explore.ejs` — updated with new design language
+- `views/partials/header.ejs` — font 800 weight, refined nav logo
+- `views/partials/footer.ejs` — crayon-line accent bar
+- `CHANGES.md`, `ROADMAP.md` — updated
