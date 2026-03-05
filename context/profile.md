@@ -1,94 +1,83 @@
-# Mike's Profile
+# Mike — Personal Profile
 
-> **AI Agents: Read this file at the start of every session. This is the foundational context about who Mike is, what he does, and what he's trying to accomplish.**
+> **AI Agents: This is the personal context file. Load this at the start of every session. It covers who Mike is outside of work.**
 
 ---
 
-## Identity & Role
+## The Person
 
-**Name:** Mike  
+**Name:** Mike (mb3)  
 **Location:** Burbank, California  
-**Current Role:** Senior Workflow Engineer, Immersive Media Technologies (IMT), Apple  
-**Team Focus:** Vision Pro content pipeline, spatial video, immersive filmmaking technology, outdoor/nature scenic experiences  
-**Career Stage:** Actively pursuing a department head position — Immersive Imaging and Workflow at Apple
+**Personal domain:** mb3.world  
+
+Mike is a technically deep, creatively ambitious person who thinks in systems. He has 20+ years in production technology but his personal world is just as rich — he's equally at home debugging Swift code, planning a backcountry camping trip, or going deep on consciousness theory. He approaches personal projects with the same rigor he brings to professional work, but with more freedom to experiment and play.
+
+He has a **daughter** and a **partner (Alexis)**. Family is central.
 
 ---
 
-## Professional Background
+## Personal Interests & Active Pursuits
 
-Mike has **20+ years of production technology experience** spanning camera systems, imaging science, and workflow engineering. Key prior roles:
+### AI Image Generation
+- Deep ComfyUI user — custom workflows, LoRA training, node-level control
+- Dual-GPU Ubuntu setup for local generation
+- Interested in pushing the creative edge: not just prompting, but workflow engineering
+- Connected to filmmaking/storyboard work via Premersive concept
 
-- **ARRI** — Managed Digital Imaging Service and Support for the western hemisphere
-- **Keslow Camera** — Director-level, managed R&D and Camera Technical Services
-- **Apple (current)** — Senior Workflow Engineer on the Vision Pro / IMT team
+### Photography & Filmmaking
+- Personal creative work distinct from professional production
+- Interest in storytelling, visual language, the craft of the image
+- ORV/outdoor action filmmaking (Twister project, Spangler Hills)
+- Immersive and spatial storytelling as personal creative frontier
 
-He bridges a rare combination of deep hardware knowledge (cameras, lenses, sensors), software development (Swift, Python, visionOS), and production workflow design. He thinks like an engineer but operates like a creative — technically rigorous and ambitious.
+### Camping & Outdoor Adventures
+- Eastern Sierra trips, desert, backcountry
+- Practical and prepared — bear canisters, freeze-dried food, route planning
+- Enjoys the intersection of gear nerdery and wilderness experience
 
----
+### Speculative Science & Philosophy
+- Consciousness, quantum phenomena, novel sensing technologies
+- Not pseudoscience — genuine curiosity about frontier science and where it might go
+- Engages with mathematical puzzles and thought experiments casually
+- Political philosophy and theory as intellectual interest
 
-## Current Technical Focus Areas
-
-### Spatial & Immersive Video
-- Apple Vision Pro content pipeline (MV-HEVC, ProRes, spatial video formats)
-- Blackmagic URSA Cine Immersive camera workflows
-- Stereoscopic 3D capture, encoding, and delivery
-- Gaussian splat capture and playback on Vision Pro (ML-Sharp / SpatialSplat)
-
-### App Development
-- **FrameProcessr** — Real-time frame-accurate motion analysis and visualization; bridges on-set workflows with VFX pipelines. Mid-BRAW integration, SRT streaming planned. Patent strategy in progress.
-- **FrameLoggr** — Companion logging tool; patent filing considerations (personal vs. Apple-assigned)
-- **BMD Camera Control** — Mature SwiftUI iPad app for controlling Blackmagic cameras over local networks; tile-based UI redesign in progress
-- **NDImmersive** — visionOS app for viewing NDI streams and SMB-shared video in 3D formats
-- **SpatialSplat** — Swift app suite converting 2D images/video into stereoscopic 3D using Apple's SHARP neural network and Metal rendering; targets macOS, iPad, Vision Pro
-
-### R&D / Exploratory
-- Underwater photogrammetry with URSA Cine Immersive + stereo fisheye for reef/cenote/shipwreck scanning
-- Gaussian splats in TouchDesigner for stereo side-by-side Vision Pro output
-- Hyperspectral data extraction from standard camera sensors
-- AI image generation (ComfyUI, LoRA training, dual-GPU Ubuntu setups)
+### Personal Health & Wellbeing
+- Interested in therapy, self-reflection, emotional processing
+- Some experience with psychedelics in a therapeutic context (psilocybin research interest)
+- Journaling and talk therapy as tools
+- MMA / martial arts training (looks into veteran programs, Sherman Oaks area)
 
 ---
 
-## Skills & Tools
+## Personal Projects (see projects/ folder)
 
-**Languages:** Swift, SwiftUI, Python, JavaScript  
-**Platforms:** visionOS, iPadOS, macOS  
-**3D / VFX:** Blender, Reality Converter, USDZ, USD pipelines  
-**Camera Tech:** Blackmagic, ARRI, spatial/immersive capture systems, BRAW format  
-**AI/ML:** ComfyUI, LoRA training, Apple SHARP/ML, Gaussian splatting  
-**Dev Tools:** Claude Code, Xcode, TouchDesigner, Wireshark  
-**Workflow:** CLAUDE.md-driven context management, TDD specification, structured handoffs  
-
----
-
-## Professional Goals
-
-1. **Secure department head role** at Apple for Immersive Imaging and Workflow
-2. **File patents** for FrameProcessr/FrameLoggr novel methods (personal filing for internal credibility)
-3. **Ship SpatialSplat** as a polished multi-platform app
-4. **Establish content-for-accommodation collaboration** with Four Seasons or similar luxury brands leveraging Apple/immersive media credentials
-5. **Advance spatial/immersive filmmaking** as a recognized technical and creative leader
+| Project | What it is |
+|---------|-----------|
+| **PATH** | AI-assisted practice therapy app — guided self-reflection and emotional processing |
+| **Premersive** | Immersive storyboard + script-to-video previsualization tool |
+| **mb3.world** | Personal website — up and running |
+| **ComfyUI workflows** | AI image generation pipelines and LoRA training |
+| **Camping Adventures** | Trip planning, gear research, route documentation |
+| **Photography & Filmmaking** | Personal creative projects |
 
 ---
 
-## Personal Context
+## How Mike Thinks
 
-- Has a **daughter** and a **partner**
-- Interests: photography, filmmaking, camping/outdoor activities, speculative science (consciousness, quantum phenomena, novel sensing)
-- Engages with philosophy of mind, political theory, mathematical puzzles as casual intellectual interests
-- Pop culture side interests (e.g., Gilmore Girls character research — yes, really)
-- Approached the February 2026 Puerto Vallarta cartel unrest situation (daughter was there sheltering near Zona Romántica) with calm problem-solving under pressure
+- Sees systems everywhere — always looking at how pieces connect
+- High tolerance for complexity, low tolerance for hand-waving
+- Curious first, skeptical second — he'll engage with almost any idea seriously before dismissing it
+- Creative ambition balanced with technical discipline
+- Values authenticity over polish
+- Processes things by talking/writing them out — journaling and conversation are how ideas develop
 
 ---
 
-## Working Style
+## Personal Context Notes
 
-- Methodical and technically rigorous, but driven by creative ambition
-- Prefers to understand *why* before *how*
-- Values directness — skip the preamble, get to the point
-- Appreciates when AI agents flag potential issues proactively
-- Thinks in systems — always considering how pieces fit into larger pipelines
-- Has high tolerance for complexity, low tolerance for sloppy reasoning
+- Daughter was in Puerto Vallarta Feb 2026 during cartel unrest (narcobloqueos near Zona Romántica) — resolved safely, but context for understanding some of Mike's stress responses
+- Partner is Alexis — relationship has its complexity; Mike engages with couples/relationship therapy concepts seriously
+- Has a therapist / therapy practice; PATH app grew from personal engagement with therapeutic tools
 
 ---
 

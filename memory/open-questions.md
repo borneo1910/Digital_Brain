@@ -1,33 +1,30 @@
 # Open Questions
 
-> **AI Agents: These are unresolved threads. Flag relevant ones when they intersect with current work.**
+> Unresolved threads. Flag when relevant to current work.
 
 ---
 
-## Career & Strategy
+## PATH
+- [ ] Platform decision: web app, iOS, or both?
+- [ ] Privacy architecture: local-only vs synced storage?
+- [ ] Personal tool only, or build toward a product?
+- [ ] How does the AI persona handle crisis signals? (important to define before building)
+- [ ] What's the right name — PATH feels right but is it final?
 
-- [ ] What is the exact org path to the Immersive Imaging and Workflow department head role at Apple? Who are the decision-makers?
-- [ ] How does the patent filing (personal vs. Apple-assigned) interact with Apple's employment IP agreement? Needs IP attorney review.
-- [ ] Four Seasons collaboration — what's the right entry point? Direct outreach, through Apple channels, or via a personal pitch deck?
+## Premersive
+- [ ] MVP scope: flat storyboard first, immersive layer phase 2?
+- [ ] Image generation backend: ComfyUI local, or API-based (Flux, etc.)?
+- [ ] Platform: web app, iPad, or desktop?
+- [ ] Personal tool or product for other immersive filmmakers?
 
----
+## mb3.world
+- [ ] What should mb3.world grow into beyond its current state?
+- [ ] Is there a creative portfolio angle? Personal brand?
 
-## Technical
-
-- [ ] Does Apple's SHARP neural network have the right entitlements/API access for SpatialSplat's use case? Confirm internally.
-- [ ] NDI SDK — does it officially support visionOS? If not, is there a path to making it work or should the approach change?
-- [ ] BMD Camera Control still-capture API — full endpoint map by camera model not yet complete
-- [ ] Underwater photogrammetry pipeline — mixed URSA Cine Immersive + stereo fisheye workflow needs validation testing
-- [ ] Hyperspectral extraction from standard camera sensors — exploratory; is there a viable approach worth pursuing?
-
----
-
-## Product / Business
-
-- [ ] FrameProcessr / FrameLoggr — App Store or internal tools only? Decision affects architecture and patent strategy.
-- [ ] SpatialSplat — internal Apple tool, public app, or both?
-- [ ] Is there a viable commercial angle to the underwater photogrammetry workflow (reef conservation, film/TV, etc.)?
+## General / Personal
+- [ ] Four Seasons content-for-accommodation collaboration — right entry point?
+- [ ] Underwater photogrammetry (reef/cenote/shipwreck) — is there a personal creative project here beyond professional R&D?
 
 ---
 
-*Add questions here whenever something is identified but not resolved. Remove or move to decisions.md when resolved.*
+*Add questions when they come up. Move to decisions.md when resolved.*

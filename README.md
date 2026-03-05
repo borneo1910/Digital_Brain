@@ -1,76 +1,61 @@
 # Mike's Digital Brain
 
-> **This repository is the single source of truth for Mike's ongoing work, context, and memory. If you are an AI agent starting a new session, read this file first, then follow the instructions below.**
+> **This is Mike's personal knowledge base and persistent memory layer. If you are an AI agent starting a session, read this file first, then follow the protocol below.**
 
 ---
 
 ## 🤖 AI Agent Onboarding Protocol
 
-When beginning any session with Mike, follow this reading order:
+1. **`context/profile.md`** — Who Mike is personally, what matters to him, how he thinks
+2. **`context/preferences.md`** — How to communicate and work with him
+3. **`projects/[relevant]/handoff.md`** — Exact state of whatever you're working on together
+4. **`memory/open-questions.md`** — Unresolved threads that may be relevant
 
-1. **`context/profile.md`** — Who Mike is, his role, background, and goals
-2. **`context/preferences.md`** — How he likes to work, communicate, and what tools he uses
-3. **`projects/[relevant project]/status.md`** — Current state of whatever you're working on together
-4. **`projects/[relevant project]/handoff.md`** — Pick up exactly where the last AI left off
-5. **`memory/open-questions.md`** — Unresolved threads that may be relevant
-
-After your session, you are expected to **update the handoff file** for the project you worked on, and log any significant decisions or learnings to the appropriate `memory/` file.
+At session end: update the project's `handoff.md` and log anything significant to `memory/`.
 
 ---
 
-## 📁 Repository Structure
+## 📁 Structure
 
 ```
 digital-brain/
-├── context/                  # Stable context about Mike — read at session start
-│   ├── profile.md            # Role, background, expertise, current focus
-│   ├── preferences.md        # Communication style, tool preferences, workflow style
-│   └── relationships.md      # Key people, teams, and contacts
+├── context/                  # Who Mike is — load at every session start
+│   ├── profile.md
+│   └── preferences.md
 │
-├── projects/                 # One folder per active or recent project
-│   ├── FrameProcessr/
-│   ├── FrameLoggr/
-│   ├── SpatialSplat/
-│   ├── BMD-Camera-Control/
-│   ├── NDImmersive/
-│   └── Open-Heart/
+├── projects/                 # Personal projects — one folder each
+│   ├── PATH/                 # AI-assisted practice therapy app
+│   ├── Premersive/           # Immersive storyboard / script-to-video tool
+│   ├── mb3-world/            # Personal website mb3.world
+│   ├── ComfyUI-ImageGen/     # AI image generation workflows
+│   ├── Camping-Adventures/   # Trip planning, gear, routes
+│   └── Photography-Filmmaking/ # Personal creative work
 │
-├── memory/                   # Persistent memory across all sessions
-│   ├── decisions.md          # Past decisions and their rationale
-│   ├── learnings.md          # What's been tried, what worked, what didn't
-│   └── open-questions.md     # Unresolved questions to return to
+├── memory/
+│   ├── decisions.md
+│   ├── learnings.md
+│   └── open-questions.md
 │
-├── workflows/                # Reusable process documentation for AI agents
-│   ├── spatial-video-pipeline.md
-│   ├── code-review.md
-│   └── patent-strategy.md
+├── workflows/                # Reusable how-tos for recurring tasks
 │
-└── handoffs/                 # Cross-session, cross-AI handoff notes (timestamped)
+└── handoffs/
     └── template.md
 ```
 
 ---
 
-## ✍️ Handoff Writing Standard
-
-At the end of every productive session, write a handoff note to `projects/[project]/handoff.md` using this format:
+## ✍️ Handoff Format
 
 ```
-## Handoff — [Date] — [AI Agent Name]
+## Handoff — [Date] — [AI Agent]
 ### What we accomplished
 ### Where we stopped
 ### What to do next
-### Gotchas / things to know
+### Gotchas
 ### Files touched
 ```
 
-Also drop a copy in `handoffs/` with the filename `YYYY-MM-DD-[agent]-[project].md` for cross-project searchability.
-
----
-
-## 🔐 Access & Permissions
-
-This is a **private repository**. Mike controls read/write access. AI agents with GitHub API access may commit directly to `main` for memory and handoff updates. For project code changes, use branches and PRs.
+Save to `projects/[project]/handoff.md` (replace) and archive a copy to `handoffs/YYYY-MM-DD-[agent]-[project].md`.
 
 ---
 
