@@ -1,39 +1,41 @@
 ## Handoff — 2026-03-05 — Claude Code (Opus 4.6)
 
 ### What we accomplished
-- Complete "Warm Paper Studio" design revamp — new visual identity across all pages
-- New palette: terracotta coral, deep teal, warm cream, charcoal (replaced generic purple)
-- Paper grain texture, crayon-underline accents, organic shapes, staggered animations
-- Premium but warm aesthetic — targets parents who pay while honoring kids' art
-- Numbered step badges, colored accent bars, paper-line story text effect
-- Updated hero: "Your child drew it. We animate it."
-- Added printed storybook to roadmap (Priority 6)
-- Adopted Claude Code Protocol with full doc structure
+- Rewrote `pipeline/animator.js` to use proven SeDream + video-01-live flow
+- Removed old SDXL/SVD/FILM pipeline code from animator
+- Pipeline: rembg extract -> SeDream frame per scene -> video-01-live animate -> ffmpeg compose
+- Added rich scene parsing with 11 pose/emotion categories + generic fallback
+- Updated `pipeline/replicate-client.js` cost estimates to match actual pipeline
+- Removed LoRA checkbox from edit page (not needed with SeDream)
+- Updated cost breakdown labels in edit page
+- Module loading verified, cost estimate verified ($0.685 for 5 scenes)
+- Added StoryTube kid-safe gallery to ROADMAP.md (Priority 7)
+- Complete "Warm Paper Studio" design revamp (previous in session)
 
 ### Where we stopped
-- Design revamp deployed and live at http://188.34.184.98
-- All pages working: home, explore, dashboard, project view/edit, auth
+- Pipeline is wired up and code-verified but NOT yet tested with real Replicate API calls
+- All changes committed and pushed (commit 0c277c6)
+- Service restarted and running
 
 ### What to do next (in priority order)
-1. **Wire up animator.js** to the working SeDream + video-01-live pipeline (run-harper-test.js pattern)
-2. **Video re-generation** on existing projects
+1. **Test pipeline end-to-end** — run "Generate Animation" on a project (~$0.70 in Replicate credits)
+2. **Video re-generation** — allow re-running pipeline on existing projects
 3. **Audio/narration** — TTS voiceover for videos
-4. **Printed storybook** — PDF generation + print-on-demand API integration
+4. **Story input improvements** — AI-assisted story expansion, scene preview
 5. **Monetization** — Stripe, pricing tiers
-6. See ROADMAP.md for full details
+6. See ROADMAP.md for full details (Priorities 1-7)
 
 ### Gotchas / things to know
 - Node 18: use `crypto.randomUUID()` not uuid package
 - Replicate FileOutput: use `.toString()` for URLs
 - SeDream `image_input` MUST be array
-- `animator.js` still uses OLD pipeline — working flow is in `run-harper-test.js`
-- Project 1 is now public for testing
-- Design uses Nunito weight 800 (added to font import) — check header.ejs if fonts look wrong
+- `animator.js` NOW uses the correct pipeline (was old SDXL flow, fixed this session)
+- Project 1 is public for testing
+- Design uses Nunito weight 800 (check header.ejs if fonts look wrong)
+- Pipeline runs async from POST /projects/:id/animate, polls via /projects/:id/job-status
 
 ### Files touched this session
-- `public/css/style.css` — complete rewrite (Warm Paper Studio)
-- `views/home.ejs` — new hero, step badges, "Order a Book" feature
-- `views/explore.ejs` — updated with new design language
-- `views/partials/header.ejs` — font 800 weight, refined nav logo
-- `views/partials/footer.ejs` — crayon-line accent bar
+- `pipeline/animator.js` — complete rewrite (SeDream + video-01-live)
+- `pipeline/replicate-client.js` — updated cost model
+- `views/project-edit.ejs` — removed LoRA, updated labels
 - `CHANGES.md`, `ROADMAP.md` — updated
