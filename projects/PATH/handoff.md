@@ -1,66 +1,71 @@
-# PATH
+# PATH — Practice, Attunement, Tools, Habits
 
-> AI-assisted practice therapy app. Guided self-reflection, emotional processing, and journaling with an AI therapist persona. Grew out of Mike's personal engagement with therapy and self-work.
+> Communication skills training app. Two modules: DEI (intimate partner communication) and Neurodivergent Parenting. AI-coached deliberate practice — like Duolingo for relational skills, grounded in peer-reviewed clinical frameworks.
 
 ---
 
 ## Concept
 
-PATH is a personal mental wellness app — not a clinical tool, but a practice space. The idea is to give people (starting with Mike) a structured, AI-guided environment for:
-- Journaling with therapeutic prompts
-- Emotional processing between real therapy sessions
-- Pattern recognition in thoughts/feelings over time
-- A consistent, non-judgmental AI "therapist voice" persona
+PATH is a mobile-first communication skills training app. Two modules currently in scope:
 
-The name PATH is intentional — it's about the ongoing practice, not a destination.
+- **Module 1: DEI** — Dialogue of Emotional Intimacy. Intimate partner communication using DEI, Gottman, NVC, and Attachment Theory frameworks.
+- **Module 2: Neurodivergent Parenting** — Parent-child communication using Greene CPS, Siegel Whole-Brain, Porges Polyvagal, and Lagging Skills Model. PDA-calibrated.
 
----
-
-## Status — 2026-03-04
-
-**Phase:** Early concept / design — a previous chat session started building this  
-⚠️ *The build chat may be inside a Claude Project — search there if the handoff details here seem sparse*
-
-### What's been discussed/decided
-- Core concept: AI-assisted practice therapy, not clinical replacement
-- Journaling + guided reflection as primary modality
-- AI persona should have a distinct therapeutic voice — warm, direct, sees through deflection
-- Mike tested the "talk therapist while I journal" interaction pattern and found it valuable
-
-### What's unknown / needs research
-- Platform: web app, iOS app, or both?
-- Data storage: local only vs. synced (privacy is a significant concern for therapy content)
-- AI integration approach: Claude API, on-device, or hybrid?
-- Whether this stays personal or becomes a product
+Core thesis: the problem is not knowledge, it is transfer. Users know the frameworks but cannot access them under pressure. PATH builds embodiment through deliberate practice and real-time AI coaching.
 
 ---
 
-## Key Design Principles
+## Status — 2026-03-12
 
-- **Non-clinical** — not trying to be a therapy replacement, explicitly a *practice* tool
-- **Privacy-first** — journal entries are intimate; storage and access must be treated seriously
-- **Consistent voice** — the AI persona should feel like the same "presence" across sessions
-- **Pattern awareness** — over time, surface themes and patterns without being prescriptive
+**Phase:** Fully built and deployed at path.clodhost.com
+
+### What's been built
+- Complete single-file React app (no build step, CDN React + Babel)
+- **Module 1**: 50 scenarios across wife/partner, child, friend contexts. Full 4-framework coaching (DEI, Gottman, NVC, Attachment)
+- **Module 2**: 40 scenarios across morning, escalation, limit, repair contexts. Full 4-framework coaching (Greene CPS, Siegel, Porges, Lagging Skills/PDA)
+- **Three-tier progression system**: Tier 1 (isolated skill), Tier 2 (multi-framework integration), Tier 3 (multi-turn AI conversation)
+- **Pre-session regulation check**: 1-10 activation scale, 4-7-8 breathing for score >= 7
+- **Tier 3 multi-turn mode**: AI plays partner/child dynamically, arc coaching after 4-8 turns
+- **ElevenLabs TTS** with 8 voice options + Web Speech API fallback
+- **Web Speech API** for voice input
+- **Crisis detection guardrail** with 988 lifeline
+- **Clinical guardrails** in both coaching prompts
+- **Cheat sheets** for both modules with full framework reference content
+- Anthropic API (claude-opus-4-6) direct browser calls
+- Warm, calm visual design: #f5f0e8 paper, Playfair Display + DM Sans + DM Mono
+
+### Infrastructure
+- Apache SSL at path.clodhost.com (Cloudflare Full SSL, self-signed origin cert)
+- Single HTML file deployment at /var/www/path.clodhost.com/public/index.html
+- No database needed — localStorage for API keys, in-memory session state
 
 ---
 
-## Handoff — 2026-03-04 — Claude
+## Handoff — 2026-03-12 — Claude Code (path.clodhost.com)
 
 ### What we accomplished
-- Concept defined, core design principles established
-- Basic AI journaling interaction tested and validated
+- Set up Apache SSL virtual host for path.clodhost.com
+- Built complete app with all features from CLAUDE.md and framework documents
+- Three-tier progression with unlock logic
+- Pre-session regulation check with grounding exercise
+- Tier 3 multi-turn conversation mode with AI-as-partner
+- Crisis detection and clinical guardrails
+- Committed and pushed to borneo1910/PATH repo
 
 ### Where we stopped
-- Platform and technical architecture not decided
-- No code built yet (or early-stage if in a Project chat)
+- App is fully deployed and functional
+- All features from the technical handoff brief are implemented
 
 ### What to do next
-1. Decide: personal tool only, or build toward product?
-2. Choose platform (web vs iOS)
-3. Define the AI persona more concretely — voice, boundaries, how it handles crisis signals
-4. Design privacy architecture before writing any code
+1. **Test with real API keys** — enter Anthropic and ElevenLabs keys and run through scenarios
+2. **Clinical review** — have a clinician test coaching output quality across all tiers
+3. **Polish Tier 3** — tune the AI-as-partner prompts based on real conversation testing
+4. **Session persistence** — consider adding localStorage for tier progress across browser sessions
+5. **Mobile testing** — verify touch interactions and voice input on iOS/Android
+6. **Consider backend** — if user accounts / progress tracking across devices is needed later
 
 ### Gotchas
-- Therapy-adjacent apps carry ethical weight — handle mental health content carefully
-- Don't let it become a clinical tool without proper expertise involved
-- Mike's own experience with therapy and self-reflection is a feature, not just research
+- API keys are client-side (localStorage) — this is by design per the spec, not a bug
+- The `anthropic-dangerous-allow-browser: true` header is required for direct browser API calls
+- Cloudflare "Full" (not "Full Strict") SSL mode — self-signed cert on origin
+- Tier unlock state is in-memory only — refreshing the page resets tier progress
