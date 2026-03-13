@@ -1,71 +1,67 @@
 # PATH — Practice, Attunement, Tools, Habits
 
-> Communication skills training app. Two modules: DEI (intimate partner communication) and Neurodivergent Parenting. AI-coached deliberate practice — like Duolingo for relational skills, grounded in peer-reviewed clinical frameworks.
+> Communication skills training app. Three modules: DEI (intimate partner), Neurodivergent Parenting, RULER Emotional Intelligence. AI-coached deliberate practice — like Duolingo for relational skills, grounded in peer-reviewed clinical frameworks.
 
 ---
 
 ## Concept
 
-PATH is a mobile-first communication skills training app. Two modules currently in scope:
+PATH is a mobile-first communication skills training app. Three modules:
 
 - **Module 1: DEI** — Dialogue of Emotional Intimacy. Intimate partner communication using DEI, Gottman, NVC, and Attachment Theory frameworks.
 - **Module 2: Neurodivergent Parenting** — Parent-child communication using Greene CPS, Siegel Whole-Brain, Porges Polyvagal, and Lagging Skills Model. PDA-calibrated.
+- **Module 3: RULER Emotional Intelligence** — Yale Center for Emotional Intelligence framework. Self-awareness, conflict, supporting others, repair. Mood Meter, Meta-Moment, Blueprint tools.
 
-Core thesis: the problem is not knowledge, it is transfer. Users know the frameworks but cannot access them under pressure. PATH builds embodiment through deliberate practice and real-time AI coaching.
+Core thesis: the problem is not knowledge, it is transfer. PATH builds embodiment through deliberate practice and real-time AI coaching.
 
 ---
 
-## Status — 2026-03-12
+## Status — 2026-03-13
 
 **Phase:** Fully built and deployed at path.clodhost.com
 
 ### What's been built
 - Complete single-file React app (no build step, CDN React + Babel)
-- **Module 1**: 50 scenarios across wife/partner, child, friend contexts. Full 4-framework coaching (DEI, Gottman, NVC, Attachment)
-- **Module 2**: 40 scenarios across morning, escalation, limit, repair contexts. Full 4-framework coaching (Greene CPS, Siegel, Porges, Lagging Skills/PDA)
-- **Three-tier progression system**: Tier 1 (isolated skill), Tier 2 (multi-framework integration), Tier 3 (multi-turn AI conversation)
+- **Module 1**: 50 scenarios (wife/partner, child, friend). 4-framework coaching (DEI, Gottman, NVC, Attachment)
+- **Module 2**: 40 scenarios (morning, escalation, limit, repair). 4-framework coaching (Greene CPS, Siegel, Porges, Lagging Skills/PDA)
+- **Module 3**: 40 scenarios (self-awareness, conflict, support, repair). RULER + Mood Meter + Meta-Moment + Blueprint coaching
+- **Three-tier progression**: Tier 1 (isolated skill), Tier 2 (multi-framework), Tier 3 (multi-turn conversation)
 - **Pre-session regulation check**: 1-10 activation scale, 4-7-8 breathing for score >= 7
-- **Tier 3 multi-turn mode**: AI plays partner/child dynamically, arc coaching after 4-8 turns
-- **ElevenLabs TTS** with 8 voice options + Web Speech API fallback
-- **Web Speech API** for voice input
-- **Crisis detection guardrail** with 988 lifeline
-- **Clinical guardrails** in both coaching prompts
-- **Cheat sheets** for both modules with full framework reference content
+- **Tier 3 multi-turn**: AI plays partner/child/inner experience dynamically, arc coaching after 4-8 turns
+- **ElevenLabs TTS** (8 voices) + Web Speech API fallback
+- **Crisis detection** with 988 lifeline + clinical guardrails in all prompts
+- **Cheat sheets** for all three modules
 - Anthropic API (claude-opus-4-6) direct browser calls
-- Warm, calm visual design: #f5f0e8 paper, Playfair Display + DM Sans + DM Mono
+- GitHub Pages hosting via index.html redirect
 
 ### Infrastructure
 - Apache SSL at path.clodhost.com (Cloudflare Full SSL, self-signed origin cert)
-- Single HTML file deployment at /var/www/path.clodhost.com/public/index.html
-- No database needed — localStorage for API keys, in-memory session state
+- Deployed at /var/www/path.clodhost.com/public/index.html
+- Also available via GitHub Pages
+- No database — localStorage for API keys, in-memory session state
 
 ---
 
-## Handoff — 2026-03-12 — Claude Code (path.clodhost.com)
+## Handoff — 2026-03-13 — Claude Code (path.clodhost.com)
 
 ### What we accomplished
-- Set up Apache SSL virtual host for path.clodhost.com
-- Built complete app with all features from CLAUDE.md and framework documents
-- Three-tier progression with unlock logic
-- Pre-session regulation check with grounding exercise
-- Tier 3 multi-turn conversation mode with AI-as-partner
-- Crisis detection and clinical guardrails
-- Committed and pushed to borneo1910/PATH repo
+- Merged code from other Claude instance that added Module 3 (RULER)
+- Fixed Module 3 gaps in Tier 3 multi-turn code (missing m3 in tierScores init, missing T3_PARTNER_M3 prompt, missing M3_SYS in arc coaching, missing m3 in tier score tracking)
+- Added T3_PARTNER_M3 prompt for emotional intelligence Tier 3 practice
+- Deployed merged+fixed version to path.clodhost.com
 
 ### Where we stopped
-- App is fully deployed and functional
-- All features from the technical handoff brief are implemented
+- All three modules fully functional across all three tiers
+- App deployed and live
 
 ### What to do next
-1. **Test with real API keys** — enter Anthropic and ElevenLabs keys and run through scenarios
-2. **Clinical review** — have a clinician test coaching output quality across all tiers
-3. **Polish Tier 3** — tune the AI-as-partner prompts based on real conversation testing
-4. **Session persistence** — consider adding localStorage for tier progress across browser sessions
-5. **Mobile testing** — verify touch interactions and voice input on iOS/Android
-6. **Consider backend** — if user accounts / progress tracking across devices is needed later
+1. **Test with real API keys** — run through all three modules at all tiers
+2. **CLAUDE.md update** — mark items 6-10 as complete, add Module 3 docs
+3. **Session persistence** — localStorage for tier progress across browser sessions
+4. **Mobile testing** — verify touch/voice on iOS/Android
+5. **Clinical review** — have clinician test coaching output quality
 
 ### Gotchas
-- API keys are client-side (localStorage) — this is by design per the spec, not a bug
-- The `anthropic-dangerous-allow-browser: true` header is required for direct browser API calls
-- Cloudflare "Full" (not "Full Strict") SSL mode — self-signed cert on origin
-- Tier unlock state is in-memory only — refreshing the page resets tier progress
+- Two Claude instances working on this repo — always pull before building
+- The other instance force-pushed once, overwriting a commit — coordinate carefully
+- Tier unlock state is in-memory only — refreshing resets progress
