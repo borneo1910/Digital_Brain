@@ -44,43 +44,36 @@ Core thesis: the problem is not knowledge, it is transfer. PATH builds embodimen
 
 ---
 
-## Handoff — 2026-03-13 (session 4) — Claude Code (path.clodhost.com)
+## Handoff — 2026-03-13 (session 5) — Claude Code (path.clodhost.com)
 
 ### What we accomplished
-- **Mood Meter practice section** — added as 5th section ("MOOD METER") in Module 3 with 20 emotional vignettes
-  - Users read a situation, place themselves on Brackett's 2×2 grid (quadrant → word → describe → deepen)
-  - Dedicated coaching prompt evaluates quadrant accuracy, vocabulary precision, description depth
-  - Scenarios cover: work situations, relationships, parenting, social moments, inner states
-- **Fixed Mood Meter modal flashing bug** — MoodMeterModal was defined as inline component inside App (arrow function), causing React to unmount/remount on every state change. Replaced with direct JSX.
-- **Major UI redesign** — complete visual overhaul inspired by modern app patterns (Headspace, Calm, Duolingo):
-  - Dark opaque panels replaced with white card-based layout and subtle shadows
-  - Category selector → centered pill chips (borderRadius 100)
-  - Tier selector → circular step nodes with line connectors
-  - Voice selector → collapsible progressive disclosure
-  - Scenario card → white card with accent left border
-  - Stats → inline trio grid with rounded container
-  - Feedback → tinted background matching module accent
-- **Centering fix** — module title and category pills centered
-- **CLAUDE.md updated** — reflects all three modules, marks build items 6-10 complete, documents Module 3 coaching prompt, Mood Meter practice mode, updated visual design system
-- **DEV_MODE flag** — `const DEV_MODE = true;` bypasses tier unlock requirements during development
-- Deployed to path.clodhost.com and pushed to GitHub
+- **Server-side API proxy** — browser direct-to-Anthropic calls were failing ("Load failed" / CORS). Built Python proxy:
+  - `proxy.py` on port 8977, runs as systemd service `path-proxy`
+  - Apache reverse proxy: `/api/messages` → `http://127.0.0.1:8977/`
+  - API key lives server-side only — no longer exposed in browser source
+  - Removed `anthropic-dangerous-allow-browser` header and direct API key usage from frontend
+- **Hardcoded API keys** for testing — Anthropic key in `proxy.py`, ElevenLabs key in `app/path.html`
+- **CLAUDE.md updated** — added proxy documentation, bold warning about hardcoded keys
+- All previous session work: Mood Meter practice (20 scenarios), modal flashing fix, major UI redesign (cards, pills, step nodes), centering fix
 
 ### Where we stopped
 - All three modules fully functional across all three tiers
-- Module 3 has 5 sections: Self, Conflict, Support, Repair, Mood Meter
-- DEV_MODE unlocking all tiers for testing
-- App deployed and live
-- Documentation fully updated
+- API calls working through server-side proxy
+- **⚠️ API KEYS ARE HARDCODED** — must remove before sharing publicly
+- DEV_MODE = true — must disable before production
+- App deployed and live at path.clodhost.com
 
 ### What to do next
-1. **Test all modules** — run through scenarios with real API keys across all tiers
+1. **Remove hardcoded API keys** before sharing — restore localStorage key entry UI
 2. **Session persistence** — localStorage for tier progress across browser sessions
 3. **Set DEV_MODE = false** before production release
 4. **Mobile testing** — verify touch/voice on iOS/Android
 5. **Clinical review** — have clinician test coaching output quality
 
 ### Gotchas
+- **API keys hardcoded** — Anthropic in `proxy.py`, ElevenLabs in `app/path.html`. REMOVE BEFORE SHARING.
 - Two Claude instances working on this repo — always pull before building
 - The other instance force-pushed once, overwriting a commit — coordinate carefully
 - Tier unlock state is in-memory only — refreshing resets progress
+- DEV_MODE is currently `true` — remember to disable before production
 - DEV_MODE is currently `true` — remember to disable before production
