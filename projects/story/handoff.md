@@ -1,42 +1,80 @@
-## Handoff — 2026-03-06 (session 2) — Claude Code (Opus 4.6)
+## Handoff — 2026-03-20 — Claude Code (Opus 4.6)
 
 ### What we accomplished
-- **Keyframe regen bugfixes:** Fixed network timeout (added 2-min AbortSignal) and lightbox showing stale images after regen (now updates kfData array)
-- **Storyboard UI:** Redesigned keyframe review as a landscape storyboard paper layout — white paper with ruled lines, 4-col grid, scene numbers, click-to-lightbox
-- **Storyboard-first edit page:** When keyframes exist, 2-column layout: storyboard (65% left, sticky) + collapsible sidebar (35% right) with Story Details, Drawings, Generate. Storyboard is the main focus.
-- **Collapsible sections:** Story Details and Drawings panels collapse/expand with toggle arrows. Auto-collapsed when storyboard exists.
-- **Moondream2 for character description:** Replaced Gemini Flash with Moondream2 (much better at isolating character from scene)
-- **Video model A/B test:** Ran Gen-4.5 vs p-video vs video-01-live on scene 7. Gen-4.5 failed (base64 too large). p-video fast (16s) but user preferred video-01-live motion quality.
-- **A/B test script:** `pipeline/test-video-models.js` — runs all 3 models in parallel on a keyframe
+
+#### Script Mode — New Project Type
+Added a full "Script / Screenplay" project type alongside the existing storybook workflow:
+
+**New files:**
+- `pipeline/script-parser.js` — Fountain/plaintext screenplay parser. Extracts scenes (heading, INT/EXT, location, time of day, description), dialogue (character, line, parenthetical), characters, mood auto-detection, duration estimation. Also generates shot lists via Llama 3 LLM.
+- `pipeline/script-narration.js` — Multi-character dialogue TTS. Per-character OpenAI voice assignment (nova/shimmer/alloy/echo/fable/onyx) with emotion mapping from parentheticals (whispering, angry, sad, etc.). Generates per-line audio and concatenates per-scene.
+- `pipeline/script-animator.js` — Script mode pipeline orchestrator. Phase 1: SeDream keyframes per shot with multi-character reference images. Phase 2: Video animation (configurable model) + multi-char TTS + Lyria-2 music + ffmpeg composition.
+
+**Database changes (models/database.js):**
+- `projects.project_type` — 'storybook' (default) or 'script'
+- `projects.video_model` — which Replicate model for video gen (default: minimax/video-01-live)
+- `projects.script_text` — raw screenplay text
+- `projects.script_parsed` — JSON of parsed screenplay structure
+- `script_characters` table — multi-character management (name, description, visual_traits, reference_image_path, voice_id, voice_emotion)
+- `script_shots` table — per-scene shots (shot_size, camera_angle, camera_movement, subject, action, dialogue_excerpt, duration, mood, keyframe_id)
+
+**Routes added (routes/projects.js):**
+- `POST /projects/:id/script/upload` — Upload + parse screenplay
+- `POST /projects/:id/script/generate-shots` — LLM shot list generation
+- `POST /projects/:id/script/shots/:shotId/update` — Edit shot details
+- `GET/POST /projects/:id/script/characters/*` — Character CRUD + voice settings
+- `POST /projects/:id/script/characters/:charId/reference` — Upload reference image
+- `GET /projects/:id/script/voice-preview` — Per-character TTS preview
+- `POST /projects/:id/script/generate-keyframes` — Phase 1: SeDream per shot
+- `POST /projects/:id/script/animate` — Phase 2: animate + TTS + music
+
+**Frontend (views/project-edit.ejs):**
+- Conditional rendering: `project_type === 'script'` shows entirely different UI
+- Script upload + parse area
+- Multi-character panel with ref image upload, voice/emotion dropdowns, preview button
+- Scene/shot list display
+- Video model selector (video-01-live, Wan 2.1, Kling 2.0)
+- Generate keyframes + Animate with Dialogue buttons
+- Job progress polling
+
+**Project creation (views/project-new.ejs):**
+- New "Project Type" selector: Storybook/Drawing vs Script/Screenplay
+- Animation style options only show for storybook mode
+
+**Also:**
+- Exported `updateJobStatus` from `pipeline/animator.js` for use by script-animator.js
+- Created `uploads/characters/` and `uploads/scripts/` directories
 
 ### Where we stopped
-- Storyboard layout deployed and working
-- Video model decision deferred — user is thinking about it
-- Currently on video-01-live for animation
-- Gen-4.5 needs fix to use URL instead of base64 for image input
+- All code committed, pushed, service restarted and running
+- Script mode UI renders and routes are wired up
+- NOT yet user-tested with an actual screenplay (no test run performed)
 
-### What to do next (in priority order)
-1. **Fix Gen-4.5 test** — host image as URL instead of base64 to avoid E006 error, re-run comparison
-2. **Video model decision** — user comparing video-01-live vs p-video quality
-3. **Phase 1 stabilization** (SCALABILITY.md) — SQLite sessions, job queue, PM2, rate limiting
-4. **Audio/narration** — TTS voiceover for videos
-5. **Monetization** — Stripe integration (user wants transparent, no-upsell pricing — not locked in yet)
-6. See ROADMAP.md for full priority list
+### What to do next
+1. **Test script upload** — Paste a short screenplay, verify parsing extracts scenes/characters/dialogue correctly
+2. **Test character voice preview** — Assign voices, click preview, verify audio plays
+3. **Test shot list generation** — Verify LLM generates reasonable shots from scenes
+4. **Test keyframe generation** — Upload character ref images, generate keyframes, check consistency
+5. **Test full animation** — Run Phase 2, verify multi-character TTS + music + video compose
+6. **Lip sync** — SadTalker integration is designed but NOT yet implemented (was in plan)
+7. **Shot detail editing UI** — Basic display exists but no inline edit fields yet
+8. **CSS** — Script mode uses inline styles; should be moved to style.css
+9. **PDF parsing** — Currently only plaintext/Fountain; PDF screenplay parsing not implemented
 
-### Gotchas / things to know
-- `step0-analyze-drawing.js` now uses Moondream2, NOT Gemini Flash
-- Gen-4.5 rejects large base64 data URIs (7-8MB PNGs) with E006 error — needs URL hosting
-- video-01-live is current default in animator.js (`VIDEO_MODEL = 'minimax/video-01-live'`)
-- p-video at $0.10 is 10x faster than video-01-live but motion quality TBD
-- Storyboard layout uses `editor-layout.has-storyboard` CSS class for 65/35 grid
-- Collapsible sections use `toggleSection()` JS + `.collapsed` class on toggle icon
-- Cache-bust on CSS: `?v=20260306d` in header.ejs
-- A/B test results at: `uploads/pipeline/video_test_1772786848455/`
+### Gotchas
+- Script mode is gated on `project_type === 'script'` — storybook projects are completely unaffected
+- `script_parsed` stores the full parsed structure as JSON in the projects table
+- Characters auto-created from script parsing; user can then assign voices/images
+- The `require('path')` call in project-edit.ejs template works because Express passes `require` to EJS
+- video_model column defaults to 'minimax/video-01-live' — other models may have different input schemas
+- Premersive (separate Flask app) also got audio pipeline code in a prior commit — that's unrelated to EaS
 
 ### Files touched this session
-- `views/project-edit.ejs` — storyboard layout, collapsible sections, regen bugfixes, tweak panel
-- `public/css/style.css` — storyboard paper styles, editor-layout grid, collapsible section styles
-- `views/partials/header.ejs` — cache-bust version updates
-- `pipeline/step0-analyze-drawing.js` — Moondream2 integration (from prior session)
-- `pipeline/test-video-models.js` — A/B comparison script
-- `CHANGES.md`, `DEBUG.md`, `DECISIONS.md` — updated
+- `models/database.js` — New columns + tables for script mode
+- `pipeline/animator.js` — Export updateJobStatus
+- `pipeline/script-parser.js` — NEW: screenplay parser
+- `pipeline/script-narration.js` — NEW: multi-character TTS
+- `pipeline/script-animator.js` — NEW: script animation pipeline
+- `routes/projects.js` — Script mode routes + character CRUD
+- `views/project-edit.ejs` — Script mode conditional UI
+- `views/project-new.ejs` — Project type selector
