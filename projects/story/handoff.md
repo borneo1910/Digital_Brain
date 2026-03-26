@@ -1,80 +1,114 @@
-## Handoff — 2026-03-20 — Claude Code (Opus 4.6)
+## Handoff — 2026-03-26 (sessions 5-8) — Claude Code (Opus 4.6)
 
 ### What we accomplished
 
-#### Script Mode — New Project Type
-Added a full "Script / Screenplay" project type alongside the existing storybook workflow:
+#### Script Mode Pipeline — Complete Overhaul
+Extensive testing and iteration on the Script mode pipeline. The final working approach:
 
-**New files:**
-- `pipeline/script-parser.js` — Fountain/plaintext screenplay parser. Extracts scenes (heading, INT/EXT, location, time of day, description), dialogue (character, line, parenthetical), characters, mood auto-detection, duration estimation. Also generates shot lists via Llama 3 LLM.
-- `pipeline/script-narration.js` — Multi-character dialogue TTS. Per-character OpenAI voice assignment (nova/shimmer/alloy/echo/fable/onyx) with emotion mapping from parentheticals (whispering, angry, sad, etc.). Generates per-line audio and concatenates per-scene.
-- `pipeline/script-animator.js` — Script mode pipeline orchestrator. Phase 1: SeDream keyframes per shot with multi-character reference images. Phase 2: Video animation (configurable model) + multi-char TTS + Lyria-2 music + ffmpeg composition.
+**Keyframe Generation: Nano Banana Pro (google/nano-banana-pro)**
+- GPT-4o-mini writes cinematic narrative prompts per beat
+- Nano Banana Pro generates start frames with character reference images
+- Style anchor: "2D hand-drawn cartoon illustration style. Every character is a clothed cartoon animal."
+- Character descriptions woven into narrative prompts ("Fred, the anthropomorphized fennec fox")
+- Reference images drive character consistency
+- ~$0.04 per keyframe
 
-**Database changes (models/database.js):**
-- `projects.project_type` — 'storybook' (default) or 'script'
-- `projects.video_model` — which Replicate model for video gen (default: minimax/video-01-live)
-- `projects.script_text` — raw screenplay text
-- `projects.script_parsed` — JSON of parsed screenplay structure
-- `script_characters` table — multi-character management (name, description, visual_traits, reference_image_path, voice_id, voice_emotion)
-- `script_shots` table — per-scene shots (shot_size, camera_angle, camera_movement, subject, action, dialogue_excerpt, duration, mood, keyframe_id)
+**Video Generation: Kling v3 Omni (kwaivgi/kling-v3-omni-video)**
+- Multi-prompt support: per-shot descriptions within a single video clip
+- Style prompt (<2500 chars) sets world rules, character descriptions, art style
+- multi_prompt JSON array defines shot-by-shot beats with durations
+- start_image from Nano Banana Pro keyframe
+- No end_image with multi_prompt (incompatible)
+- No reference_images with start_image (incompatible)
+- Pro mode, 1080p, $0.07/sec
+- 3-15 second clips
 
-**Routes added (routes/projects.js):**
-- `POST /projects/:id/script/upload` — Upload + parse screenplay
-- `POST /projects/:id/script/generate-shots` — LLM shot list generation
-- `POST /projects/:id/script/shots/:shotId/update` — Edit shot details
-- `GET/POST /projects/:id/script/characters/*` — Character CRUD + voice settings
-- `POST /projects/:id/script/characters/:charId/reference` — Upload reference image
-- `GET /projects/:id/script/voice-preview` — Per-character TTS preview
-- `POST /projects/:id/script/generate-keyframes` — Phase 1: SeDream per shot
-- `POST /projects/:id/script/animate` — Phase 2: animate + TTS + music
+**Beat-Based Architecture (replaces shot-level)**
+- Scenes split into "beats" (dramatic units of 2-5 shots, 5-15s each)
+- Each beat = 1 keyframe + 1 Kling v3 video clip
+- User controls beat boundaries
+- Individual beats can be regenerated without affecting others
+- Scene 1 test: 6 beats, 68 seconds, ~$5.00 total
+- Full 5-scene script estimate: ~$11.25
 
-**Frontend (views/project-edit.ejs):**
-- Conditional rendering: `project_type === 'script'` shows entirely different UI
-- Script upload + parse area
-- Multi-character panel with ref image upload, voice/emotion dropdowns, preview button
-- Scene/shot list display
-- Video model selector (video-01-live, Wan 2.1, Kling 2.0)
-- Generate keyframes + Animate with Dialogue buttons
-- Job progress polling
+#### Models Tested (and why we moved between them)
+1. **SeDream** — Perfect style from refs, ignores composition, E005 content filter hell
+2. **GPT Image 1.5** — Great composition, style drifts between shots
+3. **Nano Banana Pro** — Best of both when prompted correctly (cinematic narrative style)
+4. **Flux Dev LoRAs** — Trained on Replicate, completely failed (wrong base model aesthetic)
+5. **Kling v3 Omni** — Best video model, multi-shot support, physics-aware
 
-**Project creation (views/project-new.ejs):**
-- New "Project Type" selector: Storybook/Drawing vs Script/Screenplay
-- Animation style options only show for storybook mode
+#### Key Prompting Discoveries
+- Nano Banana Pro needs CINEMATIC NARRATIVE prompts, not attribute lists
+- "anthropomorphized [species]" is the magic word for character consistency
+- Style anchor at end: "2D hand-drawn cartoon illustration style. Every character is a clothed cartoon animal."
+- Positive framing only — negative instructions ("no humans") often backfire
+- 40-80 words sweet spot for prompts
+- Reference images handle style — don't stack style descriptors
+- Setting/mood FIRST in prompt, then characters within the action
 
-**Also:**
-- Exported `updateJobStatus` from `pipeline/animator.js` for use by script-animator.js
-- Created `uploads/characters/` and `uploads/scripts/` directories
+#### Harper Comparison Test
+- Generated Scene 1 (bedroom) and Scene 5 (assembly speech) using new pipeline
+- Nano Banana Pro matched the kid's drawing style from reference
+- Kling v3 maintained the illustration style in video (crayon textures preserved)
+- Significant quality improvement over existing SeDream + video-01-live pipeline
+
+#### Infrastructure
+- Researched MultiShotMaster (open-source from Kling team, built on Wan 2.1)
+- Can run on Mike's home system (2x A6000, WSL2) via Cloudflare Tunnel
+- FastAPI wrapper would accept jobs from EaS website
+- $0 per video vs $0.70-1.05 on Replicate
+- Setup plan: WSL2 → conda → MultiShotMaster → FastAPI → Cloudflare Tunnel
+
+#### Bug Fixes Throughout
+- Fixed infinite page reload loop (job status poller)
+- Fixed character ref image swapped (Fred was pointing to Sparkles image)
+- Fixed SeDream negative prompt triggering content filter
+- Fixed Kling v3 FileOutput URL parsing
+- Fixed test shot Cloudflare 100s timeout (async polling)
+- Added video model selector at top of storyboard
+- Added resume support for scene animation
+- Added single shot test generation
+
+### IMPORTANT: Don't touch the storybook pipeline
+All changes are isolated to Script mode (`project_type === 'script'`). The existing storybook/comic/drawing pipeline is completely untouched and working.
 
 ### Where we stopped
-- All code committed, pushed, service restarted and running
-- Script mode UI renders and routes are wired up
-- NOT yet user-tested with an actual screenplay (no test run performed)
+- Scene 1 of Rollercoasters fully generated (6 beats, 68s)
+- Harper comparison test done (2 beats)
+- MultiShotMaster research complete, not yet installed
+- Pipeline code uses Nano Banana Pro + Kling v3 but NOT yet automated as beats
+- The beat-based workflow was done manually this session — needs to be built into EaS
 
 ### What to do next
-1. **Test script upload** — Paste a short screenplay, verify parsing extracts scenes/characters/dialogue correctly
-2. **Test character voice preview** — Assign voices, click preview, verify audio plays
-3. **Test shot list generation** — Verify LLM generates reasonable shots from scenes
-4. **Test keyframe generation** — Upload character ref images, generate keyframes, check consistency
-5. **Test full animation** — Run Phase 2, verify multi-character TTS + music + video compose
-6. **Lip sync** — SadTalker integration is designed but NOT yet implemented (was in plan)
-7. **Shot detail editing UI** — Basic display exists but no inline edit fields yet
-8. **CSS** — Script mode uses inline styles; should be moved to style.css
-9. **PDF parsing** — Currently only plaintext/Fountain; PDF screenplay parsing not implemented
+1. **Build beat-based pipeline into EaS** — auto-split scenes into beats, generate prompts via GPT-4o-mini, generate start frames, submit to Kling v3
+2. **Beat editor UI** — let users adjust beat boundaries, review start frames before committing to video
+3. **MultiShotMaster on home system** — WSL2 setup, FastAPI wrapper, Cloudflare Tunnel, EaS integration
+4. **TTS dialogue overlay** — multi-character voices over the beat videos
+5. **Scene composition** — concat beats + audio + music into final per-scene videos
+6. **Full script render** — all scenes composed into final output
 
 ### Gotchas
-- Script mode is gated on `project_type === 'script'` — storybook projects are completely unaffected
-- `script_parsed` stores the full parsed structure as JSON in the projects table
-- Characters auto-created from script parsing; user can then assign voices/images
-- The `require('path')` call in project-edit.ejs template works because Express passes `require` to EJS
-- video_model column defaults to 'minimax/video-01-live' — other models may have different input schemas
-- Premersive (separate Flask app) also got audio pipeline code in a prior commit — that's unrelated to EaS
+- Kling v3 multi_prompt JSON must be generated by JSON.stringify — copy/paste from chat introduces hidden characters
+- multi_prompt + end_image = error (incompatible)
+- multi_prompt + reference_images + start_image = error (max 2 images with end frame)
+- Nano Banana Pro rate limits at low credit balance (6 req/min)
+- Fred's main reference_image_path was pointing to Sparkles — fixed in DB but check on new projects
+- Kling v3 prompt max 2500 chars
+- LoRA training on Replicate was a waste — Flux Dev base model can't render 2D illustration style
 
-### Files touched this session
-- `models/database.js` — New columns + tables for script mode
-- `pipeline/animator.js` — Export updateJobStatus
-- `pipeline/script-parser.js` — NEW: screenplay parser
-- `pipeline/script-narration.js` — NEW: multi-character TTS
-- `pipeline/script-animator.js` — NEW: script animation pipeline
-- `routes/projects.js` — Script mode routes + character CRUD
-- `views/project-edit.ejs` — Script mode conditional UI
-- `views/project-new.ejs` — Project type selector
+### Files touched these sessions
+- `pipeline/script-animator.js` — Major rewrites: Nano Banana Pro, GPT-4o-mini prompts, beat architecture
+- `pipeline/script-parser.js` — Prompt builder rewrites (multiple iterations)
+- `views/project-edit.ejs` — Video model selector, test shot, polling fixes, reload fix
+- `routes/projects.js` — Save model route, test shot async, scene regen
+- `models/database.js` — character_expressions table, video_model column
+- `package.json` — Added @anthropic-ai/sdk
+
+### Cost tracking (Rollercoasters project)
+- Keyframe iterations (SeDream, GPT Image, Nano Banana): ~$15-20 in testing
+- LoRA training (wasted): ~$5
+- Kling v3 video tests: ~$8
+- Scene 1 full generation (6 beats): ~$5
+- Harper comparison: ~$2
+- Total session spend: ~$35-40 estimated
